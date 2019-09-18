@@ -1,4 +1,5 @@
 const { check } = require('express-validator/check');
+const jwt = require('jsonwebtoken')
 
 module.exports = {
     validateMeChecks: [
@@ -28,5 +29,16 @@ module.exports = {
         check('city', 'City can not leave empty').
             not().isEmpty()
 
-    ]
+    ],
+    verifyToken:function (res,res,next){
+        var token = req.headers['x-access-token'];
+        console.log('come inside verify token' , res.headers)
+        jwt.verify(token, config.secret, function(err, decoded) {
+            if (err) return res.send({ auth: false, message: 'Failed to authenticate token.' });
+            return decodeURI;
+        });
+       next();
+    },
+
+    
 }

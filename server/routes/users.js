@@ -1,25 +1,29 @@
 const { User } = require('./../models/user');
 const express = require('express');
 var nodemailer = require('nodemailer');
+
+const jwt = require('./../middleware/jwt')
+
 const router = express.Router();
 const { validationResult } = require('express-validator/check');
 const m = require('./../middleware/middleware')
 
-router.get('/', async (req, res) => {
-    console.log('get user profile.')
+router.get('/list',jwt, async function(req, res) {
+    
+    console.log('come')
+    res.status(200).send({response:'user list get api called'})
+  });
+
+router.get('/profile', async function(req, res) {
+    
     let user = await User.find().sort("-_id");
-    console.log(user.length)
-    if (user.length === 0) {
-        res.send('User not found')
-    } else {
-
-        res.status(400).send(user);
-    }
+    return res.status(422).json({user:user});
+    
+  });
 
 
-});
 
-router.post('/', m.validateMeChecks, async (req, res, next) => {
+router.post('/register', m.validateMeChecks, async (req, res, next) => {
 
 
     // Check if this user already exisits
@@ -34,8 +38,6 @@ router.post('/', m.validateMeChecks, async (req, res, next) => {
             if (!errors.isEmpty()) {
                 return res.status(422).json({ errors: errors.array({ onlyFirstError: true }) });
             }
-
-
 
             // Insert the new user if they do not exist yet
             user = new User({
@@ -77,8 +79,10 @@ router.post('/', m.validateMeChecks, async (req, res, next) => {
                 }
               });
             
-
-            res.send(user);
+              var token = jwt.sign({ id: user._id }, config.secret, {
+                expiresIn: 86400 // expires in 24 hours
+              });
+              res.status(200).send({ auth: true, token: token,user });
 
         } catch (err) {
             return next(err)
