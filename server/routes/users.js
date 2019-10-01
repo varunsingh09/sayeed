@@ -5,13 +5,9 @@ var nodemailer = require('nodemailer');
 var fs = require('fs');
 
 
-var config = require("./../config")
-const jwt = require('jsonwebtoken')
-
-
 const router = express.Router();
 const { validationResult } = require('express-validator/check');
-const { upload, verifyToken } = require('./../middleware/middleware')
+const { upload, jwtVerifyToken, jwtSignin } = require('./../middleware/middleware')
 
 
 router.post("/update", async function (req, res) {
@@ -39,13 +35,13 @@ router.post("/update", async function (req, res) {
 router.get('/profile', async function (req, res) {
 
   let user = await User.find().sort("-_id");
-  return res.status(422).send({ user: user });
+  return res.status(200).send({ user: user });
 
 });
 
 
 
-router.post('/register',verifyToken, upload.single('myFile'), async (req, res, next) => {
+router.post('/register', jwtVerifyToken, upload.single('myFile'), async (req, res, next) => {
 
   // Check if this user already exisits
   let user = await User.findOne({ email: req.body.email });
@@ -59,7 +55,7 @@ router.post('/register',verifyToken, upload.single('myFile'), async (req, res, n
       const errors = validationResult(req);
 
       if (!errors.isEmpty()) {
-        return res.status(422).json({ errors: errors.array({ onlyFirstError: true }) });
+        return res.status(200).json({ errors: errors.array({ onlyFirstError: true }) });
       }
       // Insert the new user if they do not exist yet
       user = new User({
@@ -116,7 +112,7 @@ router.post('/register',verifyToken, upload.single('myFile'), async (req, res, n
 
       var mailOptions = {
         from: 'dineout2018@gmail.com',
-        to: 'singh.varun1985@gmail.com,varun.singh@homeshop18.com',
+        to: 'singh.varun1985@gmail.com,dineout2018@gmail.com',
         subject: 'Sending Email using Node.js test mail',
         text: 'That was easy!'
       };
@@ -141,20 +137,26 @@ router.post('/login', async (req, res, next) => {
 
   // Check if this user already exisits
   let user = await User.findOne({ email: req.body.email, password: req.body.password });
-  let userId = user._id
 
-  try {
+  if (!user) {
+    return res.status(400).json({ errors: 'That user dose not exisits! Please check login details' });
+  } else {
 
+    let userId = user._id
 
-    var token = jwt.sign({ id: userId }, config.secret, {
-      expiresIn: 86400 // expires in 24 hours
-    });
-    res.status(200).send({ auth: true, token: token, user });
+    try {
 
-  } catch (err) {
-    return next(err)
+      let token = jwtSignin(req, res, next, { userId: userId })
+      console.log("=======", token)
+      // var token = jwt.sign({ id: userId }, config.secret, {
+      //   expiresIn: 86400 // expires in 24 hours
+      // });
+      res.status(200).send({ auth: true, token: token, user });
+
+    } catch (err) {
+      return next(err)
+    }
   }
-
 });
 
 

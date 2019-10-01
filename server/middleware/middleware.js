@@ -42,7 +42,7 @@ module.exports = {
             not().isEmpty()
 
     ],
-    verifyToken: function (req,res,next){
+    jwtVerifyToken: function (req,res,next){
         //console.log('come inside verify token' , req)
         var token = req.headers['x-access-token'];
         if (!token) return res.status(401).send({ auth: false, message: 'No token provided.' });
@@ -54,6 +54,16 @@ module.exports = {
         
     },
 
+    jwtSignin: function (req,res,next,{userId}){
+        //console.log("come",userId)
+
+        var token = jwt.sign({ id: userId }, config.secret, {
+            expiresIn: 86400 // expires in 24 hours
+            });
+            next();
+        return token
+        
+    },
     upload: multer({ storage: storage }),
 
 }
