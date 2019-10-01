@@ -1,5 +1,17 @@
 const { check } = require('express-validator/check');
 const jwt = require('jsonwebtoken')
+var config = require('./../config');
+const multer = require('multer');
+
+var storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, 'assets')
+    },
+    filename: function (req, file, cb) {
+        cb(null, file.fieldname + '-' + Date.now())
+    }
+})
+
 
 module.exports = {
     validateMeChecks: [
@@ -30,15 +42,18 @@ module.exports = {
             not().isEmpty()
 
     ],
-    verifyToken:function (res,res,next){
+    verifyToken: function (req,res,next){
+        //console.log('come inside verify token' , req)
         var token = req.headers['x-access-token'];
-        console.log('come inside verify token' , res.headers)
+        if (!token) return res.status(401).send({ auth: false, message: 'No token provided.' });
+        
         jwt.verify(token, config.secret, function(err, decoded) {
-            if (err) return res.send({ auth: false, message: 'Failed to authenticate token.' });
-            return decodeURI;
-        });
-       next();
+            if (err) return res.status(500).send({ auth: false, message: 'Failed to authenticate token.' });
+                return next();
+            });
+        
     },
 
-    
+    upload: multer({ storage: storage }),
+
 }
