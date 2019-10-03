@@ -1,4 +1,4 @@
-const { check } = require('express-validator/check');
+const { body, check } = require('express-validator/check');
 const jwt = require('jsonwebtoken')
 var config = require('./../config');
 const multer = require('multer');
@@ -42,27 +42,27 @@ module.exports = {
             not().isEmpty()
 
     ],
-    jwtVerifyToken: function (req,res,next){
+    jwtVerifyToken: function (req, res, next) {
         //console.log('come inside verify token' , req)
         var token = req.headers['x-access-token'];
         if (!token) return res.status(401).send({ auth: false, message: 'No token provided.' });
-        
-        jwt.verify(token, config.secret, function(err, decoded) {
+
+        jwt.verify(token, config.secret, function (err, decoded) {
             if (err) return res.status(500).send({ auth: false, message: 'Failed to authenticate token.' });
-                return next();
-            });
-        
+            return next();
+        });
+
     },
 
-    jwtSignin: function (req,res,next,{userId}){
+    jwtSignin: function (req, res, next, { userId }) {
         //console.log("come",userId)
 
         var token = jwt.sign({ id: userId }, config.secret, {
             expiresIn: 86400 // expires in 24 hours
-            });
-            next();
+        });
+        next();
         return token
-        
+
     },
     upload: multer({ storage: storage }),
 

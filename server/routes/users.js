@@ -6,8 +6,8 @@ var fs = require('fs');
 
 
 const router = express.Router();
-const { validationResult } = require('express-validator/check');
-const { upload, jwtVerifyToken, jwtSignin } = require('./../middleware/middleware')
+const { validationResult,check } = require('express-validator/check');
+const { validateMeChecks, upload, jwtVerifyToken, jwtSignin } = require('./../middleware/middleware')
 
 
 router.post("/update", async function (req, res) {
@@ -41,9 +41,15 @@ router.get('/profile', async function (req, res) {
 
 
 
-router.post('/register', jwtVerifyToken, upload.single('myFile'), async (req, res, next) => {
+router.post('/register',jwtVerifyToken, async (req, res, next) => {
 
-  // Check if this user already exisits
+
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(200).json({ errors: errors.array({ onlyFirstError: true }) });
+  }
+
+
   let user = await User.findOne({ email: req.body.email });
 
   if (user) {
@@ -73,33 +79,6 @@ router.post('/register', jwtVerifyToken, upload.single('myFile'), async (req, re
         email: req.body.email,
       });
       await user.save();
-
-      let userId = user._id
-      const file = req.file
-
-
-      //rename  and upload image
-      fs.rename(file.path, file.path, async function (err) {
-        if (err) {
-          console.log(err);
-          res.send(500);
-        } else {
-
-          res.send({
-            message: 'File uploaded successfully',
-            filename: req.file.filename
-          });
-
-          profileimage = new ProfileImage({
-            filename: req.file.filename,
-            user_id: userId,
-            original_name: req.file.originalname,
-          });
-
-          await profileimage.save();
-        }
-      });
-
 
       //sending email
       var transporter = nodemailer.createTransport({

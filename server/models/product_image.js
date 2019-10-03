@@ -1,12 +1,12 @@
 const mongoose = require('mongoose');
 mongoose.set('debug', true)
 
-const ProfileImage = mongoose.model('profile_image', new mongoose.Schema({
+const ProductImage = mongoose.model('product_image', new mongoose.Schema({
     filename: {
         type: String,
         required: true
     },
-    user_id: {
+    product_id: {
         type: String,
     },
     original_name: {
@@ -17,4 +17,4 @@ const ProfileImage = mongoose.model('profile_image', new mongoose.Schema({
     created_at: { type: Date, required: true, default: Date.now }
 }));
 
-exports.ProfileImage = ProfileImage;
+exports.ProductImage = ProductImage;
