@@ -1,5 +1,6 @@
 
 const mongoose = require('mongoose');
+
 mongoose.set('debug', true)
 const Product = mongoose.model('Product', new mongoose.Schema({
     title: {
@@ -15,6 +16,10 @@ const Product = mongoose.model('Product', new mongoose.Schema({
     category: {
         type: Number,
 
+    },
+    email: {
+        type: String,
+        unique: true
     },
     is_status: {
         type: Boolean,

@@ -1,7 +1,7 @@
 
 const mongoose = require('mongoose');
 mongoose.set('debug', true)
-const Admin = mongoose.model('Admin', new mongoose.Schema({
+const Admin = mongoose.model('admin_registration', new mongoose.Schema({
     name: {
         type: String,
     },
@@ -10,7 +10,6 @@ const Admin = mongoose.model('Admin', new mongoose.Schema({
     },
     email: {
         type: String,
-
         unique: true
     },
     password: {
@@ -19,10 +18,7 @@ const Admin = mongoose.model('Admin', new mongoose.Schema({
     },
     confirm_password: {
     },
-    is_admin: {
-        type: Boolean,
-        default: false
-    },
+
     created_at: { type: Date, required: true, default: Date.now }
 }));
 

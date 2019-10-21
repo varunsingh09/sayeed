@@ -4,10 +4,15 @@ const express = require('express');
 var nodemailer = require('nodemailer');
 var fs = require('fs');
 
-
 const router = express.Router();
-const { validationResult,check } = require('express-validator/check');
+const { validationResult, check } = require('express-validator/check');
 const { validateMeChecks, upload, jwtVerifyToken, jwtSignin } = require('./../middleware/middleware')
+
+
+const googleMapsClient = require('@google/maps').createClient({
+  key: 'AIzaSyAIu_O7c-TQR2jvMxmIHRWm49Kugk7xX1E',
+  Promise: Promise
+});
 
 
 router.post("/update", async function (req, res) {
@@ -33,7 +38,7 @@ router.post("/update", async function (req, res) {
 
 
 router.get('/profile', async function (req, res) {
-
+  console.log("user session information===", req.session.email)
   let user = await User.find().sort("-_id");
   return res.status(200).send({ user: user });
 
@@ -41,7 +46,7 @@ router.get('/profile', async function (req, res) {
 
 
 
-router.post('/register',jwtVerifyToken, async (req, res, next) => {
+router.post('/register', jwtVerifyToken, async (req, res, next) => {
 
 
   const errors = validationResult(req);
@@ -58,11 +63,6 @@ router.post('/register',jwtVerifyToken, async (req, res, next) => {
 
     try {
 
-      const errors = validationResult(req);
-
-      if (!errors.isEmpty()) {
-        return res.status(200).json({ errors: errors.array({ onlyFirstError: true }) });
-      }
       // Insert the new user if they do not exist yet
       user = new User({
         name: req.body.name,
@@ -136,6 +136,22 @@ router.post('/login', async (req, res, next) => {
       return next(err)
     }
   }
+});
+
+
+
+router.get('/location', async function (req, res) {
+
+
+  googleMapsClient.geocode({ address: '201012 rail kunj ghaziabad' })
+    .asPromise()
+    .then((response) => {
+      return res.status(200).send(response.json.results);
+    })
+    .catch((err) => {
+      return res.status(200).send(err);
+    });
+
 });
 
 

@@ -4,8 +4,8 @@ var mongoose = require('mongoose');
 var chalk = require('chalk');
 
 //require database URL from properties file
-var dbURL = 'mongodb://localhost/kitchen'
-
+//var dbURL = 'mongodb://localhost/kitchen'
+var dbURL=`mongodb+srv://myadmin:myadmin@cluster0-l63og.mongodb.net/test?retryWrites=true&w=majority`
 var connected = chalk.bold.cyan;
 var error = chalk.bold.yellow;
 var disconnected = chalk.bold.red;
