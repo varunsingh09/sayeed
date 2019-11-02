@@ -5,7 +5,7 @@ var nodemailer = require('nodemailer');
 var fs = require('fs');
 
 const router = express.Router();
-const { validationResult, check } = require('express-validator/check');
+const { validationResult, check } = require('express-validator');
 const { validateMeChecks, upload, jwtVerifyToken, jwtSignin } = require('./../middleware/middleware')
 
 

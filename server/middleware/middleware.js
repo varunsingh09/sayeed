@@ -1,4 +1,4 @@
-const { body, check } = require('express-validator/check');
+const { body, check } = require('express-validator');
 const jwt = require('jsonwebtoken')
 var config = require('./../config');
 

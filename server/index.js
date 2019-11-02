@@ -4,6 +4,7 @@ var morgan = require('morgan')
 var cors = require('cors');
 const session = require('express-session')
 
+
 const dbConfig = require('./db')
 //const jwt= require("./middleware/jwt")
 const users = require('./routes/users');
@@ -26,7 +27,7 @@ app.use(bodyParser.urlencoded({
 app.use(morgan('dev'))
 
 //session secret key
-app.use(session({secret: 'ssshhhhh',saveUninitialized: true,resave: true}));
+app.use(session({ secret: 'ssshhhhh', saveUninitialized: true, resave: true }));
 
 
 
@@ -51,6 +52,6 @@ app.use(function (req, res, next) {
 
 
 
-    
+
 
 app.listen(port, () => console.log(`Listening on port ${port}...`));
