@@ -9,7 +9,7 @@ const index = (props) => {
   let { pathname } = props.location
   let header = <HomeLayout />
 
-  if (pathname.includes("login") === true) {
+  if (pathname.includes("login") === true || pathname.includes("signup") === true || pathname.includes("forgotpassword") === true) {
     header = <LoginLayout {...props} />
   } 
   return (

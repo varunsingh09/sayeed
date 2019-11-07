@@ -58,10 +58,10 @@ class LeftNavigation extends Component {
               </a>
             </li>
             <li className="nav-item">
-              <a className="nav-link" href="charts.html">
+              <Link className="nav-link" to="login">
                 <i className="fas fa-fw fa-chart-area" />
-                <span><a href="login">Login</a></span>
-              </a>
+                <span>Login</span>
+              </Link>
             </li>
           </ul>
           

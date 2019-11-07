@@ -1,9 +1,6 @@
 import React, { Component } from "react";
-// import { connect } from 'react-redux';
-// import { createContact } from './../actions/ContactAction';
-import { LOGIN_API } from "./../data/api"
-import { Link } from "react-router-dom"
-import axios from "axios";
+import { connect } from 'react-redux';
+import { createContact } from './../actions/ContactAction';
 
 class Login extends Component {
 
@@ -27,22 +24,12 @@ class Login extends Component {
     this.setState({ addressInfo: { ...addressInfo, [name]: value } });
   }
 
-  handleSubmit = async (e) => {
+  handleSubmit = (e) => {
     e.preventDefault();
     let { addressInfo } = this.state;
-    console.log("-------------",LOGIN_API)
-    let response = await axios({
-      method: 'post',
-      url: LOGIN_API,
-      data: addressInfo,
-      config: {
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-        }
-      }
-    });
+    this.props.createContact(addressInfo);
 
-    console.log("======", response.data)
+
   }
   render() {
     return (
@@ -89,9 +76,9 @@ class Login extends Component {
               <button className="btn btn-primary btn-block" >Login</button>
             </form>
             <div className="text-center">
-              <Link className="d-block small mt-3" to="signup">
+              <a className="d-block small mt-3" href="register.html">
                 Register an Account
-              </Link>
+              </a>
               <a className="d-block small" href="forgot-password.html">
                 Forgot Password?
               </a>
@@ -103,4 +90,17 @@ class Login extends Component {
   }
 }
 
-export default Login;
+const mapStateToProps = (state, ownProps) => {
+  console.log("======================",state)
+  return {
+    contacts: state.contacts
+  }
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    createContact: contact => dispatch(createContact(contact))
+  }
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Login);

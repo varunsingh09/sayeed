@@ -3,6 +3,8 @@ import { Switch, Route } from "react-router-dom"
 import Home from "./../Home"
 import Grid from "./../Grid"
 import Login from "./../Login"
+import Signup from "./../Signup"
+import Forgotpassword from "./../Forgotpassword"
 
 const RoutesArr = [
 
@@ -25,6 +27,16 @@ const RoutesArr = [
         path: "/login",
         exact: true,
         component: Login,
+    },
+    {
+        path: "/signup",
+        exact: true,
+        component: Signup,
+    },
+    {
+        path: "/forgotpassword",
+        exact: true,
+        component: Forgotpassword,
     },
 
 ]

@@ -1,24 +1,15 @@
 {
-  "name": "client",
+  "name": "material-ui",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "react": "^16.11.0",
+    "react-dom": "^16.11.0",
+    "react-scripts": "3.2.0",
     "@material-ui/core": "^4.5.2",
     "@material-ui/icons": "^4.5.1",
     "@material-ui/styles": "^4.5.2",
-    "@material/menu": "^3.2.0",
-    "axios": "^0.19.0",
-    "bootstrap": "4.3.1",
-    "contentful": "^7.10.0",
-    "mui-layout": "^1.2.9",
-    "react": "^16.10.2",
-    "react-dom": "^16.10.2",
-    "react-redux": "^7.1.1",
-    "react-router-dom": "^5.1.2",
-    "react-scripts": "3.2.0",
-    "react-toastify": "^5.4.0",
-    "redux": "^4.0.4",
-    "redux-thunk": "^2.3.0"
+    "@material/menu": "^3.2.0"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -40,5 +31,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "react-dev-utils": "^9.1.0"
   }
 }

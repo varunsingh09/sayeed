@@ -48,7 +48,7 @@ router.get('/profile', async function (req, res) {
 
 router.post('/register', jwtVerifyToken, async (req, res, next) => {
 
-
+console.log('come')
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(200).json({ errors: errors.array({ onlyFirstError: true }) });
@@ -111,6 +111,64 @@ router.post('/register', jwtVerifyToken, async (req, res, next) => {
   }
 });
 
+router.post('/register2',  async (req, res, next) => {
+
+  
+    let user = await User.findOne({ email: req.body.email });
+  
+    if (user) {
+      return res.status(400).json({ errors: 'That user already exisits! Change email id' });
+    } else {
+  
+      try {
+  
+        // Insert the new user if they do not exist yet
+        user = new User({
+          name: req.body.name,
+          email: req.body.email,
+          full_name: req.body.full_name,
+          last_name: req.body.last_name,
+          mobile: req.body.mobile,
+          password: req.body.password,
+          confirm_password: req.body.confirm_password,
+          zipcode: req.body.zipcode,
+          state: req.body.state,
+          city: req.body.city,
+          country: req.body.country,
+          email: req.body.email,
+        });
+        await user.save();
+  
+        //sending email
+        var transporter = nodemailer.createTransport({
+          service: 'gmail',
+          auth: {
+            user: 'dineout2018@gmail.com',
+            pass: 'dineout@2018'
+          }
+        });
+  
+        var mailOptions = {
+          from: 'dineout2018@gmail.com',
+          to: 'singh.varun1985@gmail.com,dineout2018@gmail.com',
+          subject: 'Sending Email using Node.js test mail',
+          text: 'That was easy!'
+        };
+  
+        transporter.sendMail(mailOptions, function (error, info) {
+          if (error) {
+            console.log(error);
+          } else {
+            console.log('Email sent: ' + info.response);
+          }
+        });
+  
+      } catch (err) {
+        return next(err)
+      }
+  
+    }
+  });
 
 router.post('/login', async (req, res, next) => {
 
@@ -126,7 +184,6 @@ router.post('/login', async (req, res, next) => {
     try {
 
       let token = jwtSignin(req, res, next, { userId: userId })
-      console.log("=======", token)
       // var token = jwt.sign({ id: userId }, config.secret, {
       //   expiresIn: 86400 // expires in 24 hours
       // });

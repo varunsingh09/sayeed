@@ -14,7 +14,7 @@ const orders = require('./routes/orders');
 const Signup2 = require('./routes/Signup2.Route');
 
 
-const port = process.env.PORT || 3006;
+const port = process.env.PORT || 8800;
 var app = express();
 app.use(cors({
     origin: '*'
@@ -24,6 +24,7 @@ app.use(express.static('public'));
 app.use(bodyParser.urlencoded({
     extended: false
 }))
+app.use(bodyParser.json());
 app.use(morgan('dev'))
 
 //session secret key
@@ -44,11 +45,11 @@ app.use('/api/', Signup2);
 
 // this code is to display error if anyone typed wrongURL extenstion 
 
-app.use(function (req, res, next) {
-    var err = new Error('We think you are lost, you might typed wrong URL!');
-    err.status = 404;
-    return next(err);
-});
+// app.use(function (req, res, next) {
+//     var err = new Error('We think you are lost, you might typed wrong URL!');
+//     err.status = 404;
+//     return next(err);
+// });
 
 
 
