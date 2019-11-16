@@ -63,6 +63,24 @@ class LeftNavigation extends Component {
                 <span>Login</span>
               </Link>
             </li>
+            <li className="nav-item">
+              <Link className="nav-link" to="addState">
+                <i className="fas fa-fw fa-chart-area" />
+                <span>Add State</span>
+              </Link>
+            </li>
+            <li className="nav-item">
+              <Link className="nav-link" to="addCounty">
+                <i className="fas fa-fw fa-chart-area" />
+                <span>Add County</span>
+              </Link>
+            </li>
+            <li className="nav-item">
+              <Link className="nav-link" to="addZiCode">
+                <i className="fas fa-fw fa-chart-area" />
+                <span>Add ZipCode</span>
+              </Link>
+            </li>
           </ul>
           
    );

@@ -5,9 +5,6 @@ import Grid from "./../Grid"
 import Login from "./../Login"
 import Signup from "./../Signup"
 import Forgotpassword from "./../Forgotpassword"
-import AddState from "./../AddState"
-import AddCounty from "./../AddCounty"
-import AddZipcode from "./../AddZipcode"
 
 const RoutesArr = [
 
@@ -40,21 +37,6 @@ const RoutesArr = [
         path: "/forgotpassword",
         exact: true,
         component: Forgotpassword,
-    },
-    {
-        path: "/addState",
-        exact: true,
-        component: AddState,
-    },
-    {
-        path: "/addCounty",
-        exact: true,
-        component: AddCounty,
-    },
-    {
-        path: "/addZiCode",
-        exact: true,
-        component: AddZipcode,
     },
 
 ]

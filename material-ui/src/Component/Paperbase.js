@@ -6,7 +6,10 @@ import Hidden from '@material-ui/core/Hidden';
 import Typography from '@material-ui/core/Typography';
 import Link from '@material-ui/core/Link';
 import Navigator from './Common/Navigator';
+import { Route } from "react-router-dom";
 import Content from './Content';
+import Login from './Login';
+import Register from './Register';
 import Header from './Common/Header';
 
 function Copyright() {
@@ -189,7 +192,11 @@ function Paperbase(props) {
         <div className={classes.app}>
           <Header onDrawerToggle={handleDrawerToggle} />
           <main className={classes.main}>
-            <Content />
+            {/* <Content /> */}
+            <Route path="/"  exact={true}  component={Content}/>
+            <Route path="/login"  exact={true} component={Login}/>
+            <Route path="/register"  exact={true} component={Register}/>
+            
           </main>
           <footer className={classes.footer}>
             <Copyright />

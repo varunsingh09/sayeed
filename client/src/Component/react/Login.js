@@ -30,7 +30,7 @@ class Login extends Component {
   handleSubmit = async (e) => {
     e.preventDefault();
     let { addressInfo } = this.state;
-
+    console.log("-------------", LOGIN_API)
     let response = await axios({
       method: 'post',
       url: LOGIN_API,
