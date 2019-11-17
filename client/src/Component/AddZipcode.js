@@ -92,7 +92,7 @@ class AddZipcode extends Component {
 
         if (response.data.errors === undefined) {
 
-            this.setState({ error: "", success: "ZipCode successfuly added." })
+            this.setState({ errors: "", success: "ZipCode successfuly added." })
         } else {
 
             this.setState({ errors: response.data.errors, success: "" })
