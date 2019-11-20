@@ -3,9 +3,9 @@ const { State } = require('./../models/state');
 const express = require('express');
 var nodemailer = require('nodemailer');
 const { validationResult } = require('express-validator');
-const { jwtSignin, jwtVerifyToken,validateMeChecks } = require('./../middleware/middleware')
-
-
+const { jwtSignin, jwtVerifyToken, validateMeChecks } = require('./../middleware/middleware')
+const bcrypt = require('bcrypt')
+const rounds = 10
 const router = express.Router();
 
 
@@ -27,6 +27,8 @@ router.post('/registration', async function (req, res, next) {
 
     } else {
 
+        let hashPassword = bcrypt.hashSync(req.body.password, rounds);
+
         try {
             admin = new Admin({
                 full_name: req.body.full_name,
@@ -34,7 +36,7 @@ router.post('/registration', async function (req, res, next) {
                 state: req.body.state,
                 zipcode: req.body.zipcode,
                 email: req.body.email,
-                password: req.body.password,
+                password:hashPassword,
                 agreement_policy: req.body.agreement_policy,
             });
 
@@ -77,12 +79,21 @@ router.post('/registration', async function (req, res, next) {
 });
 
 
-router.post('/login', async (req, res, next) => {
+router.post('/login', validateMeChecks,async (req, res, next) => {
 
+
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+        return res.status(200).json({ errors: errors.array({ onlyFirstError: true }) });
+    }
+
+    
     // Check if this user already exisits
-    let admin = await Admin.findOne({ email: req.body.email, password: req.body.password,status:true});
+    let admin = await Admin.findOne({ email: req.body.email, status: true });
+    let compPassword =  bcrypt.compareSync(req.body.password, admin.password)
 
-    if (!admin) {
+    if (compPassword==false) {
 
         return res.status(200).json({ errors: 'That admin dose not exisits! Or deactivated, Please check login details' });
 
@@ -118,13 +129,13 @@ router.post('/addState', async function (req, res, next) {
                 label: req.body.label,
                 name: req.body.name,
                 zipcode: req.body.zipcode,
-                parent_id:req.body.parent_id
-               
+                parent_id: req.body.parent_id
+
             });
 
             await state.save();
 
-            return res.status(200).send({ response: state});
+            return res.status(200).send({ response: state });
 
         } catch (err) {
             return next(err)
@@ -132,12 +143,10 @@ router.post('/addState', async function (req, res, next) {
     }
 });
 
-
-
 router.get('/stateList', async (req, res, next) => {
 
     // Check if this user already exisits
-    let state = await State.find({ parent_id: '0',status:true});
+    let state = await State.find({ parent_id: '0', status: true });
 
     if (!state) {
 
@@ -147,7 +156,7 @@ router.get('/stateList', async (req, res, next) => {
 
         try {
 
-            res.status(200).send({ state:state });
+            res.status(200).send({ state: state });
 
         } catch (err) {
             return next(err)
@@ -158,7 +167,7 @@ router.get('/stateList', async (req, res, next) => {
 router.get('/countyList', async (req, res, next) => {
 
     // Check if this user already exisits
-    let state = await State.find({ parent_id: req.query.parent_id,status:true});
+    let state = await State.find({ parent_id: req.query.parent_id, status: true });
     if (!state) {
 
         return res.status(200).json({ errors: 'No State Found!.' });
@@ -167,7 +176,7 @@ router.get('/countyList', async (req, res, next) => {
 
         try {
 
-            res.status(200).send({ county:state });
+            res.status(200).send({ county: state });
 
         } catch (err) {
             return next(err)

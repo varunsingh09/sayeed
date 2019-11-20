@@ -8,6 +8,7 @@ import Forgotpassword from "./../Forgotpassword"
 import AddState from "./../AddState"
 import AddCounty from "./../AddCounty"
 import AddZipcode from "./../AddZipcode"
+import Dashboard from "./../Dashboard"
 
 const RoutesArr = [
 
@@ -55,6 +56,11 @@ const RoutesArr = [
         path: "/addZiCode",
         exact: true,
         component: AddZipcode,
+    },
+    {
+        path: "/dashboard",
+        exact: true,
+        component: Dashboard,
     },
 
 ]
