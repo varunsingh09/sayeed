@@ -9,7 +9,7 @@ const rounds = 10
 const router = express.Router();
 
 
-router.post('/registration', async function (req, res, next) {
+router.post('/registration', validateMeChecks, async function (req, res, next) {
 
 
     const errors = validationResult(req);
@@ -19,67 +19,73 @@ router.post('/registration', async function (req, res, next) {
     }
 
 
-    let admin = await Admin.findOne({ email: req.body.email });
+    // let admin = await Admin.findOne({ email: req.body.email });
 
-    if (admin) {
+    // if (admin) {
 
-        return res.status(200).json({ errors: 'That admin already exisits! Change email id' });
+    //     return res.status(200).json({ errors: 'That admin already exisits! Change email id' });
 
-    } else {
+    // } else {
 
-        let hashPassword = bcrypt.hashSync(req.body.password, rounds);
+    let hashPassword = bcrypt.hashSync(req.body.password, rounds);
 
-        try {
-            admin = new Admin({
-                full_name: req.body.full_name,
-                company_name: req.body.company_name,
-                state: req.body.state,
-                zipcode: req.body.zipcode,
-                email: req.body.email,
-                password:hashPassword,
-                agreement_policy: req.body.agreement_policy,
-            });
+    try {
+        admin = new Admin({
+            full_name: req.body.full_name,
+            company_name: req.body.company_name,
+            state: req.body.state,
+            zipcode: req.body.zipcode,
+            email: req.body.email,
+            password: hashPassword,
+            agreement_policy: req.body.agreement_policy,
+        });
 
-            await admin.save();
-
-
-            //sending email from 
-            var transporter = nodemailer.createTransport({
-                service: 'gmail',
-                auth: {
-                    user: 'dineout2018@gmail.com',
-                    pass: 'dineout@2018'
-                }
-            });
-
-            // sending mail to 
-            var mailOptions = {
-                from: 'dineout2018@gmail.com',
-                to: 'singh.varun1985@gmail.com,Syedhaq5511@gmail.com',
-                subject: 'Welcome to FoodApp for registration',
-                text: `Welcome! ${req.body.full_name}`
-            };
-
-            //sending email method or function
-            transporter.sendMail(mailOptions, function (error, info) {
-                if (error) {
-                    console.log(error);
-                } else {
-                    console.log('Email sent: ' + info.response);
-                }
-            });
+        await admin.save();
 
 
-            return res.status(200).send({ response: admin});
+        //sending email from 
+        var transporter = nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+                user: 'dineout2018@gmail.com',
+                pass: 'dineout@2018'
+            }
+        });
 
-        } catch (err) {
-            return next(err)
+        // sending mail to 
+        var mailOptions = {
+            from: 'dineout2018@gmail.com',
+            to: 'singh.varun1985@gmail.com,Syedhaq5511@gmail.com',
+            subject: 'Welcome to FoodApp for registration',
+            text: `Welcome! ${req.body.full_name}`
+        };
+
+        //sending email method or function
+        transporter.sendMail(mailOptions, function (error, info) {
+            if (error) {
+                console.log(error);
+            } else {
+                console.log('Email sent: ' + info.response);
+            }
+        });
+
+
+        return res.status(200).send({ response: admin });
+
+    } catch (error) {
+        let str = `E11000 duplicate key error collection: test.master_admins index`
+
+        if (error.name === 'MongoError' && error.code === 11000) {
+            return res.status(200).json({ errors: { 'msg': [error.errmsg.replace(str, `There was a duplicate key error in`).replace(/[':'",.<>\{\}\[\]\\\/]/gi, "").replace('dup key', '').replace('_1',' :')] } });
+        } else {
+            next(error);
         }
     }
+    //}
 });
 
 
-router.post('/login', validateMeChecks,async (req, res, next) => {
+router.post('/login', validateMeChecks, async (req, res, next) => {
 
 
     const errors = validationResult(req);
@@ -88,12 +94,12 @@ router.post('/login', validateMeChecks,async (req, res, next) => {
         return res.status(200).json({ errors: errors.array({ onlyFirstError: true }) });
     }
 
-    
+
     // Check if this user already exisits
     let admin = await Admin.findOne({ email: req.body.email, status: true });
-    let compPassword =  bcrypt.compareSync(req.body.password, admin.password)
+    let compPassword = bcrypt.compareSync(req.body.password, admin.password)
 
-    if (compPassword==false) {
+    if (compPassword == false) {
 
         return res.status(200).json({ errors: 'That admin dose not exisits! Or deactivated, Please check login details' });
 

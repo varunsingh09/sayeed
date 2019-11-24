@@ -5,6 +5,7 @@ const Admin = mongoose.model('master_admin', new mongoose.Schema({
     full_name: {
         type: String,
         required: true,
+        unique:true
     },
     company_name: {
         type: String,
@@ -20,7 +21,7 @@ const Admin = mongoose.model('master_admin', new mongoose.Schema({
     },
     email: {
         type: String,
-        unique: true,
+        unique:true,
         required: true,
     },
     password: {

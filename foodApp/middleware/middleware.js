@@ -25,9 +25,9 @@ var storage = multer.diskStorage({
 
 module.exports = {
     validateMeChecks: [
-        check('email','Email is required.').not().isEmpty().isEmail().withMessage('Please check email.')
-        // check('full_name', 'Full name length in between 7 to 50 chars').
-        //     isLength({ min: 7, max: 50 }),
+        check('email','Email is required.').not().isEmpty().isEmail().withMessage('Please check email.'),
+        check('full_name', 'Full name length in between 7 to 50 chars').
+            isLength({ min: 3, max: 50 }),
         // check('last_name', 'Last name length in between 7 to 50 chars').
         //     isLength({ min: 5, max: 50 }),
         // check('mobile').
