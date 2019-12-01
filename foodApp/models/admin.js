@@ -35,7 +35,7 @@ const Admin = mongoose.model('master_admin', new mongoose.Schema({
     },
     status: {
         type: Number,
-        default:true
+        default:false
     },
 
     created_at: { type: Date, required: true, default: Date.now }

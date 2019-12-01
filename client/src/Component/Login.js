@@ -55,6 +55,7 @@ class Login extends Component {
       this.setState({ errors: response.data.errors })
     }
   }
+  
   render() {
     return (
       <div className="container">
